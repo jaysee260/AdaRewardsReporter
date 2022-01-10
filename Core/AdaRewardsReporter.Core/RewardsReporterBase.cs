@@ -25,13 +25,31 @@ public class RewardsReporterBase
 
     public async Task<decimal> GetRewardsSumAsync(string stakeAddress)
     {
-        var account = await _accountsService.GetAccountsAsync(stakeAddress);
-        return RewardsReporterUtils.ConvertLovelacesToAda(long.Parse(account.RewardsSum));
+        // TODO: Add test case
+        try
+        {
+            var account = await _accountsService.GetAccountsAsync(stakeAddress);
+            return RewardsReporterUtils.ConvertLovelacesToAda(long.Parse(account.RewardsSum));
+        }
+        catch (Exception exception)
+        {
+            if (exception.Message.Contains("404")) return 0;
+            throw;
+        }
     }
 
     public async Task<AccountRewardContentResponseCollection> GetRewardsHistoryAsync(string stakeAddress, int? count = 100, int? page = 1, ESortOrder? order = 0)
     {
-        return await _accountsService.GetRewardsAsync(stakeAddress, count, page, order);
+        // TODO: Add test case
+        try
+        {
+            return await _accountsService.GetRewardsAsync(stakeAddress, count, page, order);
+        }
+        catch (Exception exception)
+        {
+            if (exception.Message.Contains("404")) return new AccountRewardContentResponseCollection();
+            throw;
+        }
     }
 
     public async Task<IEnumerable<EpochContentResponse>> GetEpochsMetadataAsync(IEnumerable<long> epochs)
