@@ -9,7 +9,8 @@ using System.Globalization;
 namespace AdaRewardsReporter.Api.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("rewards")]
+[Produces("application/json")]
 public class RewardsController : ControllerBase
 {
 
@@ -26,28 +27,38 @@ public class RewardsController : ControllerBase
     }
 
     [HttpGet("{stakeAddress}/sum")]
-    public async Task<decimal> GetRewardsSum(string stakeAddress)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<object>> GetRewardsSum(string stakeAddress)
     {
-        _logger.LogDebug($"stake address: {stakeAddress}");
-        return await _rewardsReporter.GetRewardsSumAsync(stakeAddress);
+        _logger.LogInformation($"stake address: {stakeAddress}");
+        var rewardsSum = await _rewardsReporter.GetRewardsSumAsync(stakeAddress);
+        // TODO: Add proper response models
+        var response = new { rewards_sum = rewardsSum };
+        return rewardsSum is not 0 ? Ok(response) : NotFound(response);
     }
 
     [HttpGet("{stakeAddress}/report")]
-    public async Task<IEnumerable<RewardsSummary>> GetRewardsHistory(
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<IEnumerable<RewardsSummary>>> GetRewardsHistory(
         string stakeAddress,
         [FromQuery]int? count = 100,
         [FromQuery]int? page = 1,
         [FromQuery]ESortOrder? order = 0
     )
     {
-        _logger.LogDebug($"stake address: {stakeAddress}");
-        return await _rewardsReporter.GetPaginatedRewardsReportAsync(stakeAddress, count, page, order);
+        _logger.LogInformation($"stake address: {stakeAddress}");
+        var response = await _rewardsReporter.GetPaginatedRewardsReportAsync(stakeAddress, count, page, order);
+        return response.Any() ? Ok(response) : NotFound(response);
     }
 
     [HttpGet("{stakeAddress}/report/download")]
+    [Produces("text/csv")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<FileContentResult> DownloadRewardsHistory(string stakeAddress)
     {
-        _logger.LogDebug($"stake address: {stakeAddress}");
+        _logger.LogInformation($"stake address: {stakeAddress}");
         var rewardsReport = await _rewardsReporter.GetCompleteRewardsReportAsync(stakeAddress);
         await using var memoryStream = new MemoryStream();
         await using var streamWriter = new StreamWriter(memoryStream);
