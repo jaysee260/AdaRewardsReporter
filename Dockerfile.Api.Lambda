@@ -1,0 +1,21 @@
+FROM public.ecr.aws/lambda/dotnet:6 AS base
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim AS build
+WORKDIR /src
+
+COPY ["API/AdaRewardsReporter.Api/AdaRewardsReporter.Api.csproj", "API/AdaRewardsReporter.Api/"]
+COPY ["Core/AdaRewardsReporter.Core/AdaRewardsReporter.Core.csproj", "Core/AdaRewardsReporter.Core/"]
+RUN dotnet restore "API/AdaRewardsReporter.Api/AdaRewardsReporter.Api.csproj"
+
+COPY . .
+RUN dotnet publish "API/AdaRewardsReporter.Api/AdaRewardsReporter.Api.csproj" \
+            --configuration Release \ 
+            --runtime linux-x64 \
+            --self-contained false \ 
+            --output /app/publish \
+            -p:PublishReadyToRun=true  
+
+FROM base AS final
+WORKDIR /var/task
+COPY --from=build /app/publish .
+CMD ["AdaRewardsReporter.Api::AdaRewardsReporter.Api.LambdaEntryPoint::FunctionHandlerAsync"]
