@@ -23,6 +23,9 @@ public class RewardsReporter : RewardsReporterBase, IRewardsReporter
     public async Task<IEnumerable<RewardsSummary>> GetPaginatedRewardsReportAsync(string stakeAddress, int? count = 100, int? page = 1, ESortOrder? order = 0)
     {
         var history = await GetRewardsHistoryAsync(stakeAddress, count, page, order);
+        // TODO: Add test case
+        if (!history.Any()) return new List<RewardsSummary>();
+
         var epochs = await GetEpochsMetadataAsync(history.Select(x => x.Epoch));
         var pools = await GetPoolsMetadataAsync(history.Select(x => x.PoolId));
         var mapOfPoolPerEpoch = BuildMapOfPoolPerEpoch(history, pools);
@@ -53,6 +56,9 @@ public class RewardsReporter : RewardsReporterBase, IRewardsReporter
                 keepGoing = false;
             }
         }
+
+        // TODO: Add test case
+        if (!history.Any()) return new List<RewardsSummary>();
         
         var epochs = await GetEpochsMetadataAsync(history.Select(x => x.Epoch));
         var pools = await GetPoolsMetadataAsync(history.Select(x => x.PoolId));

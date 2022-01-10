@@ -17,10 +17,10 @@ namespace AdaRewardsReporter.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers().AddJsonOptions(opts => opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));;
-            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
-            var envVar = Configuration["MyEnvVar"];
+            // services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
             services.AddBlockfrost(Configuration["CardanoNetwork"], Configuration["BlockfrostApiKey"]);
             services.AddScoped<IRewardsReporter, RewardsReporter>();
+            services.AddScoped<IAddressResolver, AddressResolver>();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
         }
