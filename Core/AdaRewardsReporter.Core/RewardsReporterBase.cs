@@ -34,6 +34,8 @@ public class RewardsReporterBase
         catch (Exception exception)
         {
             if (exception.Message.Contains("404")) return 0;
+            // Found this weird edge case where a stake_address may not be registered but still returns a non 404 response. For some reason, if this is the case, dotnet SDK is throwing an exception. No error when testing the call through Postman.
+            if (exception.Message.Contains("Could not deserialize the response body stream as Blockfrost.Api.Models.AccountContentResponse")) return 0;
             throw;
         }
     }
