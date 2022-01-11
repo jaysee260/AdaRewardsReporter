@@ -1,0 +1,25 @@
+name: Build AdaRewardsReporter.Api
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore ./API/AdaRewardsReporter.Api/AdaRewardsReporter.Api.csproj
+    - name: Build
+      run: dotnet build ./API/AdaRewardsReporter.Api/AdaRewardsReporter.Api.csproj --no-restore
+    - name: Test
+      run: dotnet test ./API/AdaRewardsReporter.Api.Tests/AdaRewardsReporter.Api.Tests.csproj --no-build --verbosity normal
