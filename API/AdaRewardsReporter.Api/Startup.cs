@@ -47,7 +47,7 @@ namespace AdaRewardsReporter.Api
                 endpoints.MapControllers();
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync("Welcome to running ASP.NET Core on AWS Lambda");
+                    await context.Response.WriteAsync("Welcome to the ADA Rewards Reporter API");
                 });
             });
         }
