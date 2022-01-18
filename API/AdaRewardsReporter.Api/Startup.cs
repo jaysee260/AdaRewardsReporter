@@ -40,6 +40,8 @@ namespace AdaRewardsReporter.Api
 
             app.UseRouting();
 
+            app.UseCors(policy => policy.AllowAnyOrigin());
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
