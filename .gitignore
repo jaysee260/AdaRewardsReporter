@@ -2,5 +2,8 @@
 .vs
 bin
 obj
+
+local.settings.json
 *.Development.json
 minimal-*.cs
+notes.txt
