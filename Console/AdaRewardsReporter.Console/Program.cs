@@ -3,12 +3,15 @@
 using AdaRewardsReporter.Core;
 using Blockfrost.Api.Extensions;
 using Blockfrost.Api.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-var apiKey = "mainnet9XPRZ9XDxEAKrFs21mRXz3AdepGENId1";
-var network = "mainnet";
-var stakeAddress = "stake1u8a2tx757nh9907vwaylh6kg64q0nx3t09qf0cs4tzf8hkcuegfax";
-var adaHandle = "$madeup";
+var configuration = new ConfigurationBuilder().AddJsonFile("local.settings.json").Build();
+
+var apiKey = configuration["BlockfrostApiKey"];
+var network = configuration["CardanoNetwork"];
+var stakeAddress = configuration["StakeAddress"];
+var adaHandle = configuration["AdaHandle"];
 
 var provider = new ServiceCollection().AddBlockfrost(network, apiKey).BuildServiceProvider();
 var accountsService = provider.GetRequiredService<IAccountsService>();

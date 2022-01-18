@@ -1,0 +1,6 @@
+﻿{
+  "BlockfrostApiKey": "<redacted>",
+  "CardanoNetwork": "<mainnet | testnet?",
+  "StakeAddress": "<redacted>",
+  "AdaHandle": "<redacted>"
+}

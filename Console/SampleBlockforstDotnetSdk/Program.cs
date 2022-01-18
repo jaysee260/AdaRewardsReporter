@@ -2,11 +2,14 @@
 using Blockfrost.Api.Extensions;
 using Blockfrost.Api.Models;
 using Blockfrost.Api.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-var apiKey = "mainnet9XPRZ9XDxEAKrFs21mRXz3AdepGENId1";
-var network = "mainnet";
-var stakeAddress = "stake1u8a2tx757nh9907vwaylh6kg64q0nx3t09qf0cs4tzf8hkcuegfax";
+var configuration = new ConfigurationBuilder().AddJsonFile("local.settings.json").Build();
+
+var apiKey = configuration["BlockfrostApiKey"];
+var network = configuration["CardanoNetwork"];
+var stakeAddress = configuration["StakeAddress"];
 var concurrentMode = true;
 var convertLovelacesToAda = (long lovelaces) => lovelaces * 0.000001M;
 // Rewards for a given epoch X are paid out at the end of the next epoch, X+1
