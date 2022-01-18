@@ -7,3 +7,4 @@ local.settings.json
 *.Development.json
 minimal-*.cs
 notes.txt
+.env
